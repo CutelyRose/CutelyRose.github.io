@@ -1,0 +1,277 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>关于我 | CutelyRose's Blog</title><meta name="author" content="CutelyRose"><meta name="copyright" content="CutelyRose"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="物联网工程在读 &#x2F; JS 逆向与爬虫开发 &#x2F; 专注于 JSVMP 还原与风控对抗">
+<meta property="og:type" content="website">
+<meta property="og:title" content="关于我">
+<meta property="og:url" content="https://cutelyrose.github.io/about/index.html">
+<meta property="og:site_name" content="CutelyRose&#39;s Blog">
+<meta property="og:description" content="物联网工程在读 &#x2F; JS 逆向与爬虫开发 &#x2F; 专注于 JSVMP 还原与风控对抗">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://q.qlogo.cn/headimg_dl?dst_uin=3228222175&spec=640&img_type=jpg">
+<meta property="article:published_time" content="2026-08-30T14:10:00.000Z">
+<meta property="article:modified_time" content="2026-08-30T14:10:00.000Z">
+<meta property="article:author" content="CutelyRose">
+<meta property="article:tag" content="博客, 技术, 生活, Hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://q.qlogo.cn/headimg_dl?dst_uin=3228222175&spec=640&img_type=jpg"><script type="application/ld+json"></script><link rel="shortcut icon" href="http://q.qlogo.cn/headimg_dl?dst_uin=3228222175&spec=640&img_type=jpg"><link rel="canonical" href="https://cutelyrose.github.io/about/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.1.260810"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        try {
+          const data = { value }
+
+          if (ttl != null) {
+            data.expiry = Date.now() + ttl * 86400000
+          }
+
+          localStorage.setItem(key, JSON.stringify(data))
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '关于我',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'page'
+}</script><meta name="generator" content="Hexo 8.1.2"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(https://i.33xp.cn/__imgapi.cn__/__imgapi.cn__5ce2627d2f04f.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="http://q.qlogo.cn/headimg_dl?dst_uin=3228222175&amp;spec=640&amp;img_type=jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">1</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">2</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(https://i.33xp.cn/__imgapi.cn__/__imgapi.cn__5d109a52dcfc3.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">CutelyRose's Blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title">关于我</h1></div></header><main class="layout hide-aside" id="content-inner"><div id="page"><div class="container" id="article-container"><blockquote>
+<p>🚀 <strong>你好，欢迎来到我的数字花园！</strong><br>一名专注于 <strong>Web&#x2F;App 逆向安全</strong>、<strong>JSVMP 虚拟机还原</strong> 与 <strong>风控对抗</strong> 的开发者。热爱钻研底层执行机制与自动化工程，秉持 <em>“Code for fun, hack for truth”</em> 的极客精神。</p>
+</blockquote>
+<hr>
+<h2 id="🧑‍💻-个人档案"><a href="#🧑‍💻-个人档案" class="headerlink" title="🧑‍💻 个人档案"></a>🧑‍💻 个人档案</h2><ul>
+<li><strong>教育背景</strong>：河南工程学院 · 物联网工程 本科在读 (2023 - 2027)</li>
+<li><strong>主修方向</strong>：计算机网络、数据结构、操作系统、计算机组成原理</li>
+<li><strong>核心领域</strong>：JS 逆向分析 (纯算&#x2F;补环境)、JSVMP 指令集还原、AST 自动化反混淆、高并发数据采集</li>
+<li><strong>坐标</strong>：中国</li>
+</ul>
+<hr>
+<h2 id="🛠️-技术栈与武器库"><a href="#🛠️-技术栈与武器库" class="headerlink" title="🛠️ 技术栈与武器库"></a>🛠️ 技术栈与武器库</h2><details open>
+<summary style="cursor: pointer; padding: 8px 14px; background: #f0f4f8; border-left: 4px solid #49b1f5; border-radius: 4px; font-weight: bold; margin-bottom: 15px;">
+💡 核心技术能力概览（点击收起 / 展开）
+</summary>
+
+<table>
+<thead>
+<tr>
+<th align="left">领域</th>
+<th align="left">核心技能 &#x2F; 专项能力</th>
+<th align="left">工具与生态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>逆向工程 &amp; 风控</strong></td>
+<td align="left">JS 逆向 (纯算&#x2F;补环境)、<strong>JSVMP 虚拟机指令还原</strong>、动态 Key 提取、浏览器环境检测绕过</td>
+<td align="left">Chrome DevTools, Fiddler, Charles, v_jstools</td>
+</tr>
+<tr>
+<td align="left"><strong>反混淆 &amp; 自动化</strong></td>
+<td align="left"><strong>Babel AST</strong> 语法树处理 (控制流平坦化、花指令剔除、动态插桩)、Hook 注入、RPC 调用</td>
+<td align="left">Node.js, Babel, VS Code</td>
+</tr>
+<tr>
+<td align="left"><strong>爬虫开发 &amp; 数据</strong></td>
+<td align="left">异步高并发采集 (<code>asyncio</code>, <code>aiohttp</code>, <code>requests</code>)、XPath、正则解析、数据持久化</td>
+<td align="left">Python 3, Redis, MySQL</td>
+</tr>
+<tr>
+<td align="left"><strong>桌面开发 &amp; 嵌入式</strong></td>
+<td align="left">PyQt6 多线程 GUI 工具开发、易语言脚本自动化、物联网底层协议与单片机开发</td>
+<td align="left">PyQt6, Keil, Git, Linux</td>
+</tr>
+</tbody></table>
+</details>
+
+<hr>
+<h2 id="💼-核心攻坚与项目实战"><a href="#💼-核心攻坚与项目实战" class="headerlink" title="💼 核心攻坚与项目实战"></a>💼 核心攻坚与项目实战</h2><h3 id="1-阿里-v3-滑块验证纯算还原"><a href="#1-阿里-v3-滑块验证纯算还原" class="headerlink" title="1. 阿里 v3 滑块验证纯算还原"></a>1. 阿里 v3 滑块验证纯算还原</h3><ul>
+<li><strong>技术要点</strong>：全链路接口跟栈、133 位设备指纹数组解析、动态 Key 映射与 MD5 截断算法复现。</li>
+<li><strong>工程落地</strong>：通过 Node.js 补环境执行提取 <code>feilin.js</code> 动态 Key，正则与插桩解析 <code>cx.js</code> 建立本地缓存映射，实现全流程纯算封装。</li>
+<li><strong>成果</strong>：无感验证通过率 <strong>100%</strong>，拼图滑块通过率 <strong>92%</strong>。</li>
+</ul>
+<h3 id="2-腾讯滑块验证码环境补齐与轨迹还原"><a href="#2-腾讯滑块验证码环境补齐与轨迹还原" class="headerlink" title="2. 腾讯滑块验证码环境补齐与轨迹还原"></a>2. 腾讯滑块验证码环境补齐与轨迹还原</h3><ul>
+<li><strong>技术要点</strong>：分析 JSVMP 虚拟机执行时序，跟栈定位 <strong>37 位前端环境检测点</strong>，在 Node.js 中完成细粒度沙箱伪造。</li>
+<li><strong>轨迹建模</strong>：构建<strong>动态贝塞尔曲线拟合模型</strong>，模拟真实用户滑动的加速度、回弹与抖动特征。</li>
+<li><strong>成果</strong>：完成本地参数生成与接口对接，百轮并发测试通过率稳定在 <strong>91%</strong>。</li>
+</ul>
+<h3 id="3-抖音-a-bogus-核心参数纯算还原"><a href="#3-抖音-a-bogus-核心参数纯算还原" class="headerlink" title="3. 抖音 a_bogus 核心参数纯算还原"></a>3. 抖音 <code>a_bogus</code> 核心参数纯算还原</h3><ul>
+<li><strong>技术要点</strong>：针对 JSVMP 魔改加密算法，编写 AST 脚本完成三元表达式展开、死代码消除与控制流还原；借助动态插桩将复杂嵌套整理为 <code>switch/case</code>。</li>
+<li><strong>确定性固化</strong>：Hook 固化随机数与时间戳标记，消除随机扰动，彻底实现脱离浏览器环境的本地纯算复现。</li>
+</ul>
+<hr>
+<h2 id="📖-关于本站"><a href="#📖-关于本站" class="headerlink" title="📖 关于本站"></a>📖 关于本站</h2><p>本站建立于 <strong>2026 年</strong>，基于 <strong><a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a></strong> 与 <strong><a target="_blank" rel="noopener" href="https://butterfly.js.org/">Butterfly</a></strong> 主题构建。</p>
+<p>主要用于：</p>
+<ol>
+<li><strong>逆向实战沉淀</strong>：记录 JS 逆向、JSVMP 还原与 AST 反混淆的方法论与踩坑经验。</li>
+<li><strong>工具与脚本</strong>：分享高效的自动化采集、桌面端工具与开源实践。</li>
+<li><strong>成长印记</strong>：记录大学阶段的折腾历程、技术探索与生活碎片。</li>
+</ol>
+<hr>
+<h2 id="📮-社交与联系"><a href="#📮-社交与联系" class="headerlink" title="📮 社交与联系"></a>📮 社交与联系</h2><div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 15px;">
+  <a href="https://github.com/CutelyRose" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; padding: 8px 16px; background: #24292e; color: #fff; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 500;">
+    🐙 GitHub
+  </a>
+  <a href="mailto:3228222175@qq.com" style="display: inline-flex; align-items: center; padding: 8px 16px; background: #49b1f5; color: #fff; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 500;">
+    📧 电子邮箱
+  </a>
+</div>
+
+<hr>
+<blockquote>
+<p>💡 <em>保持敏锐，深挖底层。欢迎邮件交流探讨技术细节！</em></p>
+</blockquote>
+</div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2026 By CutelyRose</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.1.260810</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.1.260810"></script><script src="/js/main.js?v=5.7.1.260810"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
