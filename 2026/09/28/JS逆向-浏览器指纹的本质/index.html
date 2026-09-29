@@ -1,0 +1,247 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>JS逆向 - 浏览器指纹的本质 | CutelyRose's Blog</title><meta name="author" content="CutelyRose"><meta name="copyright" content="CutelyRose"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="浏览器指纹是一组浏览器&#x2F;设备环境的可观测特征（指纹信号）及其组合所形成的、具有一定区分能力的特征集合。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JS逆向 - 浏览器指纹的本质">
+<meta property="og:url" content="https://cutelyrose.github.io/2026/09/28/JS%E9%80%86%E5%90%91-%E6%B5%8F%E8%A7%88%E5%99%A8%E6%8C%87%E7%BA%B9%E7%9A%84%E6%9C%AC%E8%B4%A8/index.html">
+<meta property="og:site_name" content="CutelyRose&#39;s Blog">
+<meta property="og:description" content="浏览器指纹是一组浏览器&#x2F;设备环境的可观测特征（指纹信号）及其组合所形成的、具有一定区分能力的特征集合。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.dmoe.cc/random.php">
+<meta property="article:published_time" content="2026-09-28T13:20:53.000Z">
+<meta property="article:modified_time" content="2026-09-29T00:00:49.837Z">
+<meta property="article:author" content="CutelyRose">
+<meta property="article:tag" content="JS逆向">
+<meta property="article:tag" content="浏览器指纹">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.dmoe.cc/random.php"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "JS逆向 - 浏览器指纹的本质",
+  "url": "https://cutelyrose.github.io/2026/09/28/JS%E9%80%86%E5%90%91-%E6%B5%8F%E8%A7%88%E5%99%A8%E6%8C%87%E7%BA%B9%E7%9A%84%E6%9C%AC%E8%B4%A8/",
+  "image": "https://www.dmoe.cc/random.php",
+  "datePublished": "2026-09-28T13:20:53.000Z",
+  "dateModified": "2026-09-29T00:00:49.837Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "CutelyRose",
+      "url": "https://cutelyrose.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="http://q.qlogo.cn/headimg_dl?dst_uin=3228222175&spec=640&img_type=jpg"><link rel="canonical" href="https://cutelyrose.github.io/2026/09/28/JS%E9%80%86%E5%90%91-%E6%B5%8F%E8%A7%88%E5%99%A8%E6%8C%87%E7%BA%B9%E7%9A%84%E6%9C%AC%E8%B4%A8/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.1.260810"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        try {
+          const data = { value }
+
+          if (ttl != null) {
+            data.expiry = Date.now() + ttl * 86400000
+          }
+
+          localStorage.setItem(key, JSON.stringify(data))
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'JS逆向 - 浏览器指纹的本质',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.2"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(https://i.33xp.cn/__imgapi.cn__/__imgapi.cn__5ce2627d2f04f.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="http://q.qlogo.cn/headimg_dl?dst_uin=3228222175&amp;spec=640&amp;img_type=jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://www.dmoe.cc/random.php);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">CutelyRose's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">JS逆向 - 浏览器指纹的本质</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">JS逆向 - 浏览器指纹的本质</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-09-28T13:20:53.000Z" title="发表于 2026-09-28 21:20:53">2026-09-28</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-09-29T00:00:49.837Z" title="更新于 2026-09-29 08:00:49">2026-09-29</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/JS%E9%80%86%E5%90%91/">JS逆向</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>本文主要认识和理解浏览器指纹</p>
+<h1 id="浏览器指纹"><a href="#浏览器指纹" class="headerlink" title="浏览器指纹"></a>浏览器指纹</h1><p>浏览器指纹是一组浏览器&#x2F;设备环境的可观测特征（指纹信号）及其组合所形成的、具有一定区分能力的特征集合。</p>
+<h2 id="常见的指纹信号"><a href="#常见的指纹信号" class="headerlink" title="常见的指纹信号"></a>常见的指纹信号</h2><h3 id="设备信息"><a href="#设备信息" class="headerlink" title="设备信息"></a>设备信息</h3><ol>
+<li>navigator.userAgent ：最为典型的指纹信号，是浏览器的用户代理字符串。常常携带于在请求头中，该值与浏览器内核有关。</li>
+<li>navigator.appName : 现代浏览器永远为该’Netscape’。</li>
+<li>navigator.language ：首选语言，中文的话就是’zh-CN’。(曾被<a target="_blank" rel="noopener" href="https://www.anthropic.com/">Anthropic</a>利用，用来区分使用用户)</li>
+<li>navigator.productSub :当前浏览器的构建版本号。</li>
+<li>navigator.deviceMemory :设备内存的近似值。</li>
+<li>navigator.userAgentData.brands ：返回一个包含品牌信息的数组。</li>
+<li>navigator.userAgentData.getHighEntropyValues ：返回一个promise，它兑现为一个字典对象，其中包含低熵信息以及关于浏览器的请求的高熵信息。比如’[“architecture”（平台架构信息）,”model”（用户代理在移动设备上运行）,”platformVersion”（一个包含平台版本的字符串）,”fullVersionList”（一个具有 <code>&quot;brand&quot;</code> 和 <code>&quot;version&quot;</code> 属性的对象数组，分别表示浏览器名称和完整版本）]’。</li>
+<li>navigator.getBattery :提供了系统的电池信息，它返回一个包含电池对象的 promise 对象。</li>
+<li>screen ：获取屏幕分辨率信息</li>
+<li>devicePixelRatio ：物理像素与CSS像素比。</li>
+</ol>
+<h3 id="canvas指纹"><a href="#canvas指纹" class="headerlink" title="canvas指纹"></a>canvas指纹</h3><h4 id="canvas-2d"><a href="#canvas-2d" class="headerlink" title="canvas 2d"></a>canvas 2d</h4><p>canvas 2d指纹是通过在浏览器创建一个canvas标签，接着调用getContext获取canvas2d对象，接着调用canvas2d的相关渲染API，接着调用canvas.toDataURL进行哈希<br>简单来说，canvas指纹反映的是“你的硬件+操作系统+浏览器+字体+驱动”在执行同一段绘画指令时产生的像素级差异。同一套操作在同一设备的浏览器短时间内不会变动，这个特性决定了指纹的区分度。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">function getCanvasFingerprint() &#123;</span><br><span class="line">  const canvas = document.createElement(&#x27;canvas&#x27;);</span><br><span class="line">  const ctx = canvas.getContext(&#x27;2d&#x27;);</span><br><span class="line">  canvas.width = 240;</span><br><span class="line">  canvas.height = 60;</span><br><span class="line"> </span><br><span class="line">  // 文字渲染</span><br><span class="line">  ctx.textBaseline = &#x27;top&#x27;;</span><br><span class="line">  ctx.font = &#x27;16px Arial&#x27;;</span><br><span class="line">  ctx.fillStyle = &#x27;#f60&#x27;;</span><br><span class="line">  ctx.fillText(&#x27;BrowserFP &amp;#128512;&amp;#128293;&#x27;, 2, 2);</span><br><span class="line"> </span><br><span class="line">  // 图形+渐变</span><br><span class="line">  const gradient = ctx.createLinearGradient(0, 0, 200, 0);</span><br><span class="line">  gradient.addColorStop(0, &#x27;red&#x27;);</span><br><span class="line">  gradient.addColorStop(1, &#x27;blue&#x27;);</span><br><span class="line">  ctx.fillStyle = gradient;</span><br><span class="line">  ctx.beginPath();</span><br><span class="line">  ctx.arc(60, 40, 20, 0, Math.PI * 2);</span><br><span class="line">  ctx.fill();</span><br><span class="line"> </span><br><span class="line">  // 混合模式</span><br><span class="line">  ctx.globalCompositeOperation = &#x27;multiply&#x27;;</span><br><span class="line">  ctx.fillStyle = &#x27;rgba(0,255,0,0.5)&#x27;;</span><br><span class="line">  ctx.fillRect(0, 0, 240, 60);</span><br><span class="line"> </span><br><span class="line">  return canvas.toDataURL();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="canvas-webgl"><a href="#canvas-webgl" class="headerlink" title="canvas webgl"></a>canvas webgl</h4><p>canvas webgl指纹是通过在浏览器创建一个canvas标签，接着调用getContext获取webgl对象，接着调用getExtension启用webgl扩展，接着调用getParameter返回扩展信息<br>WebGL指纹是在浏览器使用WebGL时所展现出的硬件和软件配置信息，如显卡型号，驱动版本，操作系统等。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">const canvas = document.createElement(&#x27;canvas&#x27;);</span><br><span class="line">const gl = canvas.getContext(&#x27;webgl&#x27;) || canvas.getContext(&#x27;experimental-webgl&#x27;);</span><br><span class="line">const debugInfo = gl.getExtension(&#x27;WEBGL_debug_renderer_info&#x27;);</span><br><span class="line"> </span><br><span class="line">const vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);</span><br><span class="line">const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);</span><br><span class="line">// 例如:&#x27;ANGLE (NVIDIA, NVIDIA GeForce RTX 4060 Laptop GPU (0x000028A0) Direct3D11 vs_5_0 ps_5_0, D3D11)&#x27;</span><br></pre></td></tr></table></figure>
+
+<h3 id="WebAudio指纹"><a href="#WebAudio指纹" class="headerlink" title="WebAudio指纹"></a>WebAudio指纹</h3><p>生成相同的音频输入 → 经过浏览器&#x2F;系统的音频处理链 → 获取输出结果 → 对结果做特征提取或哈希</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">const ctx = new OfflineAudioContext(1, 44100, 44100);</span><br><span class="line"></span><br><span class="line">const oscillator = ctx.createOscillator();</span><br><span class="line">const compressor = ctx.createDynamicsCompressor();</span><br><span class="line"></span><br><span class="line">oscillator.type = &#x27;triangle&#x27;;</span><br><span class="line">oscillator.frequency.value = 10000;</span><br><span class="line"></span><br><span class="line">oscillator.connect(compressor);</span><br><span class="line">compressor.connect(ctx.destination);</span><br><span class="line"></span><br><span class="line">oscillator.start(0);</span><br><span class="line"></span><br><span class="line">ctx.startRendering().then(buffer =&gt; &#123;</span><br><span class="line">    const data = buffer.getChannelData(0);</span><br><span class="line"></span><br><span class="line">    console.log(data.slice(0, 20));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>同一设备在相同环境、相同浏览器、相同代码、相同音频参数下，Audio Fingerprint 通常应该稳定；但不能认为它永远不变,与运行环境有关。</p>
+<h3 id="插件和扩展指纹"><a href="#插件和扩展指纹" class="headerlink" title="插件和扩展指纹"></a>插件和扩展指纹</h3><p>navigator.plugins : 通过调用该api来检测浏览器的插件信息，区分度很高，每个人的浏览器安装组合因人而异，排列组合和版本都会对该指纹产生影响。<br>在实际网站采集指纹信号中，经常性会把PluginArray&#x2F;Plugin&#x2F;MimeType这三类结合起来，这三层互相指向</p>
+<h3 id="网页信息指纹"><a href="#网页信息指纹" class="headerlink" title="网页信息指纹"></a>网页信息指纹</h3><ol>
+<li>location ：返回包含有关文档当前位置的信息</li>
+<li>document.currentScript ：返回当前正在处理其脚本。当在js代码里运行会直接返回运行的script元素，手动在控制台敲返回undefined。</li>
+<li>getComputedStyle：通过传入真实网址的节点返回对应的所有 CSS 属性的值</li>
+</ol>
+<h3 id="浏览器运行环境指纹（通常会以数字-布尔值-位掩码的形式）"><a href="#浏览器运行环境指纹（通常会以数字-布尔值-位掩码的形式）" class="headerlink" title="浏览器运行环境指纹（通常会以数字  布尔值  位掩码的形式）"></a>浏览器运行环境指纹（通常会以数字  布尔值  位掩码的形式）</h3><ol>
+<li>document.all : 它是一个真实存在的对象，但会“假装自己是 undefined”。</li>
+<li>dom操作：通过创建标签接着appendchild读取相关信息是否合理来验证dom操作能力。</li>
+<li>matchMedia：返回指定的媒体查询字符串解析后的结果。而在node需要手动实现。</li>
+<li>浏览器与node的差异 ：调用浏览器特有的函数或进行toString验证是否为native方法 ；调用node特有的函数；原型链完整性；</li>
+<li>调用object方法： 通过调用object方法查看描述符是否和浏览器环境保持一致。</li>
+</ol>
+<h2 id="指纹生成链路"><a href="#指纹生成链路" class="headerlink" title="指纹生成链路"></a>指纹生成链路</h2><p>浏览器环境信息-&gt;产生各种可观测特征-&gt;这些特征 &#x3D; 指纹信号-&gt;每个信号有不同的区分度-&gt;多个信号组合-&gt;浏览器指纹</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://cutelyrose.github.io">CutelyRose</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://cutelyrose.github.io/2026/09/28/JS%E9%80%86%E5%90%91-%E6%B5%8F%E8%A7%88%E5%99%A8%E6%8C%87%E7%BA%B9%E7%9A%84%E6%9C%AC%E8%B4%A8/">https://cutelyrose.github.io/2026/09/28/JS%E9%80%86%E5%90%91-%E6%B5%8F%E8%A7%88%E5%99%A8%E6%8C%87%E7%BA%B9%E7%9A%84%E6%9C%AC%E8%B4%A8/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://cutelyrose.github.io" target="_blank">CutelyRose's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/JS%E9%80%86%E5%90%91/">JS逆向</a><a class="post-meta__tags" href="/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E6%8C%87%E7%BA%B9/">浏览器指纹</a></div><div class="post-share"><div class="social-share" data-image="https://www.dmoe.cc/random.php" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/08/30/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="我的第一篇文章"><img class="cover" src="https://i.33xp.cn/__imgapi.cn__/__imgapi.cn__5bd409c5ed727.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">我的第一篇文章</div></div><div class="info-2"><div class="info-item-1">你好，世界！这是我的第一篇博客文章。   👋 开篇随笔今天把博客重新整理上线了，选用了 Butterfly 主题。干净的排版和舒适的阅读体验很适合用来记录长篇的技术总结。 接下来会写些什么？ 学习与实验：网络协议、逆向攻坚、算法分析。 工程与实操：Python 异步编程、自动化工具、桌面端开发。 生活与思考：阶段性总结与碎碎念。   “路虽远，行则将至；事虽难，做则必成。”  感谢你的到访，我们下篇文章见！ </div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="http://q.qlogo.cn/headimg_dl?dst_uin=3228222175&amp;spec=640&amp;img_type=jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">CutelyRose</div><div class="author-info-description">一个分享技术、生活随笔的个人博客</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/CutelyRose"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E6%8C%87%E7%BA%B9"><span class="toc-number">1.</span> <span class="toc-text">浏览器指纹</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E6%8C%87%E7%BA%B9%E4%BF%A1%E5%8F%B7"><span class="toc-number">1.1.</span> <span class="toc-text">常见的指纹信号</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%BE%E5%A4%87%E4%BF%A1%E6%81%AF"><span class="toc-number">1.1.1.</span> <span class="toc-text">设备信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#canvas%E6%8C%87%E7%BA%B9"><span class="toc-number">1.1.2.</span> <span class="toc-text">canvas指纹</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#canvas-2d"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">canvas 2d</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#canvas-webgl"><span class="toc-number">1.1.2.2.</span> <span class="toc-text">canvas webgl</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#WebAudio%E6%8C%87%E7%BA%B9"><span class="toc-number">1.1.3.</span> <span class="toc-text">WebAudio指纹</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%92%E4%BB%B6%E5%92%8C%E6%89%A9%E5%B1%95%E6%8C%87%E7%BA%B9"><span class="toc-number">1.1.4.</span> <span class="toc-text">插件和扩展指纹</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E9%A1%B5%E4%BF%A1%E6%81%AF%E6%8C%87%E7%BA%B9"><span class="toc-number">1.1.5.</span> <span class="toc-text">网页信息指纹</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83%E6%8C%87%E7%BA%B9%EF%BC%88%E9%80%9A%E5%B8%B8%E4%BC%9A%E4%BB%A5%E6%95%B0%E5%AD%97-%E5%B8%83%E5%B0%94%E5%80%BC-%E4%BD%8D%E6%8E%A9%E7%A0%81%E7%9A%84%E5%BD%A2%E5%BC%8F%EF%BC%89"><span class="toc-number">1.1.6.</span> <span class="toc-text">浏览器运行环境指纹（通常会以数字  布尔值  位掩码的形式）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8C%87%E7%BA%B9%E7%94%9F%E6%88%90%E9%93%BE%E8%B7%AF"><span class="toc-number">1.2.</span> <span class="toc-text">指纹生成链路</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/09/28/JS%E9%80%86%E5%90%91-%E6%B5%8F%E8%A7%88%E5%99%A8%E6%8C%87%E7%BA%B9%E7%9A%84%E6%9C%AC%E8%B4%A8/" title="JS逆向 - 浏览器指纹的本质"><img src="https://www.dmoe.cc/random.php" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JS逆向 - 浏览器指纹的本质"/></a><div class="content"><a class="title" href="/2026/09/28/JS%E9%80%86%E5%90%91-%E6%B5%8F%E8%A7%88%E5%99%A8%E6%8C%87%E7%BA%B9%E7%9A%84%E6%9C%AC%E8%B4%A8/" title="JS逆向 - 浏览器指纹的本质">JS逆向 - 浏览器指纹的本质</a><time datetime="2026-09-28T13:20:53.000Z" title="发表于 2026-09-28 21:20:53">2026-09-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/08/30/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="我的第一篇文章"><img src="https://i.33xp.cn/__imgapi.cn__/__imgapi.cn__5bd409c5ed727.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="我的第一篇文章"/></a><div class="content"><a class="title" href="/2026/08/30/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="我的第一篇文章">我的第一篇文章</a><time datetime="2026-08-30T15:02:53.000Z" title="发表于 2026-08-30 23:02:53">2026-08-30</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2026 By CutelyRose</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.1.260810</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.1.260810"></script><script src="/js/main.js?v=5.7.1.260810"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
