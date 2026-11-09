@@ -1,0 +1,301 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>安卓逆向-嘟嘟牛 | CutelyRose's Blog</title><meta name="author" content="CutelyRose"><meta name="copyright" content="CutelyRose"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="入门安卓逆向 仅为记录学习 记录分析还原逆向参数到请求全流程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="安卓逆向-嘟嘟牛">
+<meta property="og:url" content="https://cutelyrose.github.io/2026/11/09/%E5%AE%89%E5%8D%93%E9%80%86%E5%90%91-%E5%98%9F%E5%98%9F%E7%89%9B/index.html">
+<meta property="og:site_name" content="CutelyRose&#39;s Blog">
+<meta property="og:description" content="入门安卓逆向 仅为记录学习 记录分析还原逆向参数到请求全流程">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.dmoe.cc/random.php">
+<meta property="article:published_time" content="2026-11-09T02:07:23.000Z">
+<meta property="article:modified_time" content="2026-11-09T03:30:39.328Z">
+<meta property="article:author" content="CutelyRose">
+<meta property="article:tag" content="安卓逆向">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.dmoe.cc/random.php"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "安卓逆向-嘟嘟牛",
+  "url": "https://cutelyrose.github.io/2026/11/09/%E5%AE%89%E5%8D%93%E9%80%86%E5%90%91-%E5%98%9F%E5%98%9F%E7%89%9B/",
+  "image": "https://www.dmoe.cc/random.php",
+  "datePublished": "2026-11-09T02:07:23.000Z",
+  "dateModified": "2026-11-09T03:30:39.328Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "CutelyRose",
+      "url": "https://cutelyrose.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="http://q.qlogo.cn/headimg_dl?dst_uin=3228222175&spec=640&img_type=jpg"><link rel="canonical" href="https://cutelyrose.github.io/2026/11/09/%E5%AE%89%E5%8D%93%E9%80%86%E5%90%91-%E5%98%9F%E5%98%9F%E7%89%9B/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.1.260810"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        try {
+          const data = { value }
+
+          if (ttl != null) {
+            data.expiry = Date.now() + ttl * 86400000
+          }
+
+          localStorage.setItem(key, JSON.stringify(data))
+        } catch (e) {
+          console.error(e)
+        }
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '安卓逆向-嘟嘟牛',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.2"></head><body><div class="bg-animation" id="web_bg" style="background-image: url(https://i.33xp.cn/__imgapi.cn__/__imgapi.cn__5ce2627d2f04f.jpg);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="http://q.qlogo.cn/headimg_dl?dst_uin=3228222175&amp;spec=640&amp;img_type=jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://www.dmoe.cc/random.php);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">CutelyRose's Blog</span></a><a class="nav-page-title" href="/"><span class="site-name">安卓逆向-嘟嘟牛</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">安卓逆向-嘟嘟牛</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-11-09T02:07:23.000Z" title="发表于 2026-11-09 10:07:23">2026-11-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-11-09T03:30:39.328Z" title="更新于 2026-11-09 11:30:39">2026-11-09</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="软件信息"><a href="#软件信息" class="headerlink" title="软件信息"></a>软件信息</h1><p><img src="/assets/image-20261109102326913.png" alt="image-20261109102326913"></p>
+<h1 id="接口分析"><a href="#接口分析" class="headerlink" title="接口分析"></a>接口分析</h1><p>触发发送验证码接口 ，只看到该请求且url与行为高度一致 因此确认是该接口触发 请求体和响应体均为密文 都需要逆向分析 我事先在mt管理器查过 此版本无壳，首先就是分析java层 </p>
+<p><img src="/assets/image-20261109101912604.png" alt="image-20261109101912604"></p>
+<h1 id="java层分析"><a href="#java层分析" class="headerlink" title="java层分析"></a>java层分析</h1><h2 id="搜什么"><a href="#搜什么" class="headerlink" title="搜什么"></a>搜什么</h2><p>我会优先选择搜索url的部分 其次是搜索密文键的关键词</p>
+<h2 id="搜到怎么快速筛选"><a href="#搜到怎么快速筛选" class="headerlink" title="搜到怎么快速筛选"></a>搜到怎么快速筛选</h2><p>我按搜url为例<br><img src="/assets/image-20261109102648186.png" alt="image-20261109102648186"></p>
+<p>看包名与触发该请求的行为 我能精准定位loginactivity 接下来就是跟代码了</p>
+<pre><code>public void sendMobileCode(String str) {
+    this.DEFAULT_TYPE = new TypeToken&lt;RequestResult&gt;() { // from class: com.dodonew.online.ui.LoginActivity.2
+    }.getType();
+    this.para.clear();      //将map清空
+    this.para.put(IntentKey.PHONE, str); //put方法 第一个参数存入键 第二个存入该函数传递过来的参数值大概率手机号明文 
+    requestNetwork(&quot;user/findPwd/sendMobileCode&quot;, this.para, this.DEFAULT_TYPE); // 盯着第二个参数即可
+}
+
+private void requestNetwork(final String str, Map&lt;String, String&gt; map, Type type) {
+    showProgress();
+    this.request = new JsonRequest(this, &quot;http://api.dodovip.com/api/&quot; + str, &quot;&quot;, new Response.Listener&lt;RequestResult&gt;() { // from class: com.dodonew.online.ui.LoginActivity.7
+        /* JADX WARN: Multi-variable type inference failed */
+        @Override // com.android.volley.Response.Listener
+        public void onResponse(RequestResult requestResult) {
+            Log.e(&quot;登录信息&quot;, &quot;login:=&quot; + requestResult.response);
+            if (requestResult.code.equals(&quot;1&quot;)) {
+                if (str.equals(Config.URL_LOGIN) || str.equals(Config.URL_LOGIN_SMS)) {
+                    DodonewOnlineApplication.setLoginUser((User) requestResult.data);
+                    DodonewOnlineApplication.loginLabel = &quot;mobile&quot;;
+                    Utils.saveJson(LoginActivity.this, DodonewOnlineApplication.loginLabel, Config.LOGINLABEL_JSON);
+                    User user = (User) new Gson().fromJson(requestResult.response, User.class);
+                    LoginActivity.this.intentMainActivity();
+                    EventBusManager.getInstace().getEventBus().post(new LoginSuccessInfo(user));
+                    Log.e(&quot;登录注册&quot;, &quot;userId:=&quot; + DodonewOnlineApplication.getLoginUser().getUserId());
+                } else if (str.equals(&quot;user/findPwd/sendMobileCode&quot;)) {
+                    LoginActivity.this.timeCountUtil.start();
+                    Log.e(&quot;LoginActivy&quot;, &quot;sendCode:=&quot; + requestResult.response);
+                    LoginActivity.this.showToast(&quot;验证码已发送,请注意查收&quot;);
+                }
+            } else {
+                LoginActivity.this.showToast(requestResult.message);
+                Log.e(&quot;LoginActivy&quot;, &quot;res:=&quot; + requestResult.data);
+            }
+            LoginActivity.this.dissProgress();
+        }
+    }, this, type);
+    this.request.addRequestMap(map, 0); //只在这里使用了 直接跟进去 
+    DodonewOnlineApplication.addRequest(this.request, this);
+}
+
+
+public void addRequestMap(Map&lt;String, String&gt; map, int i) {
+    String str = System.currentTimeMillis() + &quot;&quot;; //获取时间戳
+    if (map == null) {
+        map = new HashMap&lt;&gt;();
+    }
+    map.put(d.c.a.b, str); //放入map
+    String strEncodeDesMap = RequestUtil.encodeDesMap(RequestUtil.paraMap(map, Config.BASE_APPEND, &quot;sign&quot;), this.desKey, this.desIV); //密文在这里生成的 看起来是des算法 但是是否魔改还需要进去细看 第一个参数需要搞清楚入参是什么
+    JSONObject jSONObject = new JSONObject();
+    try {
+        jSONObject.put(&quot;Encrypt&quot;, strEncodeDesMap); //很明显创建一个json 在向上找strEncodeDesMap即可
+        this.mRequestBody = jSONObject + &quot;&quot;;
+    } catch (JSONException e) {
+        e.printStackTrace();
+    }
+}
+
+
+public static String paraMap(Map&lt;String, String&gt; map, String str, String str2) {
+    try {
+        Set&lt;String&gt; setKeySet = map.keySet(); // 取出map的键放入setKeySet
+        StringBuilder sb = new StringBuilder(); // 创建可变字符串，用来拼最终待签名串。
+        ArrayList arrayList = new ArrayList(); // 创建数组
+        for (String str3 : setKeySet) {
+            arrayList.add(str3 + &quot;=&quot; + map.get(str3));
+        }// 将map转化为 键=值 的格式 并放入数组中
+        Collections.sort(arrayList); //对 arrayList 做自然排序。因为元素是 String，所以按字符串字典序排
+        for (int i = 0; i &lt; arrayList.size(); i++) {
+            sb.append((String) arrayList.get(i));
+            sb.append(a.b);// &amp;
+        }//将arrayList里的内容按&amp;分割拼接
+        sb.append(&quot;key=&quot; + str);//在拼接固定盐值
+        map.put(str2, Utils.md5(sb.toString()).toUpperCase()); // 进行MD5并放入原map中 键为sign
+        String json = new GsonBuilder().serializeNulls().create().toJson(sortMapByKey(map));// 把 map 序列化成 JSON 字符串 得到&quot;{&#39;sign&#39;:&#39;a10ssscccacsc&#39;,&#39;phone&#39;:&#39;19999999999&#39;}
+        Log.w(AppConfig.DEBUG_TAG, json + &quot;   result&quot;);
+        return json; //将结果return回去
+    } catch (Exception e) {
+        e.printStackTrace();
+        return &quot;&quot;;
+    }
+}
+</code></pre>
+<p>示例hook代码</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">hook_paraMap</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="title class_">Java</span>.<span class="title function_">perform</span>(<span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">var</span> obj = <span class="title class_">Java</span>.<span class="title function_">use</span>(<span class="string">&#x27;com.dodonew.online.http.RequestUtil&#x27;</span>);</span><br><span class="line">        <span class="keyword">var</span> <span class="title class_">HashMap</span> = <span class="title class_">Java</span>.<span class="title function_">use</span>(<span class="string">&#x27;java.util.HashMap&#x27;</span>);</span><br><span class="line"></span><br><span class="line">        obj.<span class="property">paraMap</span>.<span class="title function_">overload</span>(</span><br><span class="line">            <span class="string">&#x27;java.util.Map&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;java.lang.String&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;java.lang.String&#x27;</span></span><br><span class="line">        ).<span class="property">implementation</span> = <span class="keyword">function</span> (<span class="params">map, salt, str</span>) &#123;</span><br><span class="line">		</span><br><span class="line">            <span class="keyword">var</span> hashMap = <span class="title class_">Java</span>.<span class="title function_">cast</span>(map, <span class="title class_">HashMap</span>); <span class="comment">//给java对象转化为指定类型的java对象包装器</span></span><br><span class="line"></span><br><span class="line">            <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;入参--&gt;&quot;</span>, hashMap.<span class="title function_">toString</span>());</span><br><span class="line">            <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;salt--&gt;&quot;</span>, salt);</span><br><span class="line">            <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;str--&gt;&quot;</span>, str);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">var</span> res = <span class="variable language_">this</span>.<span class="title function_">paraMap</span>(map, salt, str);</span><br><span class="line"></span><br><span class="line">            <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;结果--&gt;&quot;</span>, res);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> res;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">hook_des</span>(<span class="params"></span>)&#123;</span><br><span class="line">    <span class="title class_">Java</span>.<span class="title function_">perform</span>(<span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">        <span class="keyword">var</span> obj=<span class="title class_">Java</span>.<span class="title function_">use</span>(<span class="string">&#x27;com.dodonew.online.http.RequestUtil&#x27;</span>)</span><br><span class="line">        obj.<span class="property">encodeDesMap</span>.<span class="title function_">overload</span>(<span class="string">&#x27;java.lang.String&#x27;</span>,<span class="string">&#x27;java.lang.String&#x27;</span>,<span class="string">&#x27;java.lang.String&#x27;</span>).<span class="property">implementation</span> =<span class="keyword">function</span>(<span class="params">data,key,iv</span>)&#123;</span><br><span class="line">            <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;data---&gt;&#x27;</span>,data)</span><br><span class="line">            <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;key---&gt;&#x27;</span>,key)</span><br><span class="line">            <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;iv---&gt;&#x27;</span>,iv)</span><br><span class="line">            <span class="keyword">var</span> res=<span class="variable language_">this</span>.<span class="title function_">encodeDesMap</span>(data,key,iv)</span><br><span class="line">            <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&#x27;res---&gt;&#x27;</span>,res)</span><br><span class="line">            <span class="keyword">return</span> res</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">main</span>(<span class="params"></span>)&#123;</span><br><span class="line">    <span class="title function_">hook_des</span>()</span><br><span class="line">&#125;</span><br><span class="line"><span class="title function_">setImmediate</span>(main);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="本地算法和python还原"><a href="#本地算法和python还原" class="headerlink" title="本地算法和python还原"></a>本地算法和python还原</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> DES</span><br><span class="line"><span class="keyword">from</span> Crypto.Util.Padding <span class="keyword">import</span> pad, unpad</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">KEY = <span class="string">&quot;65102933&quot;</span></span><br><span class="line">IV = <span class="string">&quot;32028092&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">get_des_key</span>(<span class="params">key: <span class="built_in">str</span></span>) -&gt; <span class="built_in">bytes</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;生成 DES 密钥&quot;&quot;&quot;</span></span><br><span class="line">    md5_hex = hashlib.md5(key.encode(<span class="string">&quot;utf-8&quot;</span>)).hexdigest()</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">bytes</span>.fromhex(md5_hex[:<span class="number">16</span>])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">DES_Encrypt</span>(<span class="params">word: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;DES CBC 加密，Base64 输出&quot;&quot;&quot;</span></span><br><span class="line">    key = get_des_key(KEY)</span><br><span class="line">    iv = IV.encode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line"></span><br><span class="line">    cipher = DES.new(key, DES.MODE_CBC, iv)</span><br><span class="line"></span><br><span class="line">    encrypted = cipher.encrypt(</span><br><span class="line">        pad(word.encode(<span class="string">&quot;utf-8&quot;</span>), DES.block_size)</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> base64.b64encode(encrypted).decode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">DES_Decrypt</span>(<span class="params">word: <span class="built_in">str</span></span>) -&gt; <span class="built_in">str</span>:</span><br><span class="line">    <span class="string">&quot;&quot;&quot;DES CBC 解密，Base64 输入&quot;&quot;&quot;</span></span><br><span class="line">    key = get_des_key(KEY)</span><br><span class="line">    iv = IV.encode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line"></span><br><span class="line">    cipher = DES.new(key, DES.MODE_CBC, iv)</span><br><span class="line"></span><br><span class="line">    decrypted = cipher.decrypt(</span><br><span class="line">        base64.b64decode(word)</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> unpad(</span><br><span class="line">        decrypted,</span><br><span class="line">        DES.block_size</span><br><span class="line">    ).decode(<span class="string">&quot;utf-8&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">url = <span class="string">&quot;http://api.dodovip.com/api/user/findPwd/sendMobileCode&quot;</span></span><br><span class="line"></span><br><span class="line">phone=<span class="string">&#x27;19999999999&#x27;</span></span><br><span class="line">timeStamp=<span class="built_in">str</span>(<span class="built_in">int</span>(time.time()*<span class="number">1000</span>))</span><br><span class="line">sign=hashlib.md5(<span class="string">f&#x27;phone=<span class="subst">&#123;phone&#125;</span>&amp;timeStamp=<span class="subst">&#123;timeStamp&#125;</span>&amp;key=sdlkjsdljf0j2fsjk&#x27;</span>.encode(<span class="string">&#x27;utf-8&#x27;</span>)).hexdigest().upper()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">data = &#123;<span class="string">&quot;phone&quot;</span>:phone,<span class="string">&quot;sign&quot;</span>:sign,<span class="string">&quot;timeStamp&quot;</span>:timeStamp&#125;</span><br><span class="line"></span><br><span class="line">encrypted = DES_Encrypt(json.dumps(data))</span><br><span class="line"></span><br><span class="line">payload = &#123;</span><br><span class="line">  <span class="string">&quot;Encrypt&quot;</span>: encrypted</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">headers = &#123;</span><br><span class="line">  <span class="string">&#x27;User-Agent&#x27;</span>: <span class="string">&quot;Dalvik/2.1.0 (Linux; U; Android 12; Pixel 3 Build/SP1A.210812.016.C2)&quot;</span>,</span><br><span class="line">  <span class="string">&#x27;Connection&#x27;</span>: <span class="string">&quot;Keep-Alive&quot;</span>,</span><br><span class="line">  <span class="string">&#x27;Accept-Encoding&#x27;</span>: <span class="string">&quot;gzip&quot;</span>,</span><br><span class="line">  <span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&quot;application/json; charset=utf-8&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">response = requests.post(url, data=json.dumps(payload), headers=headers)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(DES_Decrypt(response.text))</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://cutelyrose.github.io">CutelyRose</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://cutelyrose.github.io/2026/11/09/%E5%AE%89%E5%8D%93%E9%80%86%E5%90%91-%E5%98%9F%E5%98%9F%E7%89%9B/">https://cutelyrose.github.io/2026/11/09/%E5%AE%89%E5%8D%93%E9%80%86%E5%90%91-%E5%98%9F%E5%98%9F%E7%89%9B/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://cutelyrose.github.io" target="_blank">CutelyRose's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AE%89%E5%8D%93%E9%80%86%E5%90%91/">安卓逆向</a></div><div class="post-share"><div class="social-share" data-image="https://www.dmoe.cc/random.php" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/10/03/%E8%AE%A1%E7%BD%91%E5%9F%BA%E7%A1%80/" title="计网基础"><img class="cover" src="https://www.dmoe.cc/random.php" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">计网基础</div></div><div class="info-2"><div class="info-item-1">网络基础学习笔记围绕 HTTP&#x2F;HTTPS、Headers、Cookie、Session、状态码、重定向、TCP 三次握手与爬虫连接复用整理。学习目标是：理解协议机制、读懂关键报文，通过连接复用减少资源消耗，并掌握爬虫面试中的常见问题。  本文中的域名、Cookie 值及报文均为示例，用于学习协议与准备面试，不代表真实抓包记录；未执行文中的网络请求示例。  目录 协议栈与完整请求链路 HTTP 报文、方法与版本 HTTPS 与 TLS Headers 与缓存 Cookie、SameSite 与 CORS Session、Token 与登录状态 状态码与重定向 TCP 三次握手：为什么偏偏是三次 爬虫如何减少握手次数并节省资源 HTTP&#x2F;HTTPS 面试总结与参考资料  1. 协议栈与完整请求链路1.1 各层职责   层次 常见协议或技术 主要职责    应用层 HTTP、DNS 定义通信的内容，请求和响应的格式   安全机制 TLS 负责在数据传输前进行加密、身份认证和完整性保护   传输层 TCP、UDP 进程之间的数据传输   网络层 IPv4、IPv6、...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="http://q.qlogo.cn/headimg_dl?dst_uin=3228222175&amp;spec=640&amp;img_type=jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">CutelyRose</div><div class="author-info-description">一个分享技术、生活随笔的个人博客</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/CutelyRose"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BD%AF%E4%BB%B6%E4%BF%A1%E6%81%AF"><span class="toc-number">1.</span> <span class="toc-text">软件信息</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">接口分析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#java%E5%B1%82%E5%88%86%E6%9E%90"><span class="toc-number">3.</span> <span class="toc-text">java层分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%90%9C%E4%BB%80%E4%B9%88"><span class="toc-number">3.1.</span> <span class="toc-text">搜什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%90%9C%E5%88%B0%E6%80%8E%E4%B9%88%E5%BF%AB%E9%80%9F%E7%AD%9B%E9%80%89"><span class="toc-number">3.2.</span> <span class="toc-text">搜到怎么快速筛选</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E7%AE%97%E6%B3%95%E5%92%8Cpython%E8%BF%98%E5%8E%9F"><span class="toc-number">4.</span> <span class="toc-text">本地算法和python还原</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/11/09/%E5%AE%89%E5%8D%93%E9%80%86%E5%90%91-%E5%98%9F%E5%98%9F%E7%89%9B/" title="安卓逆向-嘟嘟牛"><img src="https://www.dmoe.cc/random.php" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="安卓逆向-嘟嘟牛"/></a><div class="content"><a class="title" href="/2026/11/09/%E5%AE%89%E5%8D%93%E9%80%86%E5%90%91-%E5%98%9F%E5%98%9F%E7%89%9B/" title="安卓逆向-嘟嘟牛">安卓逆向-嘟嘟牛</a><time datetime="2026-11-09T02:07:23.000Z" title="发表于 2026-11-09 10:07:23">2026-11-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/03/%E8%AE%A1%E7%BD%91%E5%9F%BA%E7%A1%80/" title="计网基础"><img src="https://www.dmoe.cc/random.php" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="计网基础"/></a><div class="content"><a class="title" href="/2026/10/03/%E8%AE%A1%E7%BD%91%E5%9F%BA%E7%A1%80/" title="计网基础">计网基础</a><time datetime="2026-10-03T11:52:20.000Z" title="发表于 2026-10-03 19:52:20">2026-10-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/09/28/JS%E9%80%86%E5%90%91-%E6%B5%8F%E8%A7%88%E5%99%A8%E6%8C%87%E7%BA%B9%E7%9A%84%E6%9C%AC%E8%B4%A8/" title="JS逆向 - 浏览器指纹的本质"><img src="https://www.dmoe.cc/random.php" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JS逆向 - 浏览器指纹的本质"/></a><div class="content"><a class="title" href="/2026/09/28/JS%E9%80%86%E5%90%91-%E6%B5%8F%E8%A7%88%E5%99%A8%E6%8C%87%E7%BA%B9%E7%9A%84%E6%9C%AC%E8%B4%A8/" title="JS逆向 - 浏览器指纹的本质">JS逆向 - 浏览器指纹的本质</a><time datetime="2026-09-28T13:20:53.000Z" title="发表于 2026-09-28 21:20:53">2026-09-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/08/30/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="我的第一篇文章"><img src="https://i.33xp.cn/__imgapi.cn__/__imgapi.cn__5bd409c5ed727.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="我的第一篇文章"/></a><div class="content"><a class="title" href="/2026/08/30/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0/" title="我的第一篇文章">我的第一篇文章</a><time datetime="2026-08-30T15:02:53.000Z" title="发表于 2026-08-30 23:02:53">2026-08-30</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2026 By CutelyRose</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.1.260810</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.1.260810"></script><script src="/js/main.js?v=5.7.1.260810"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
